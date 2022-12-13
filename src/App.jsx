@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import Header from "./components/Header";
@@ -22,6 +22,11 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [menuActive, setMenuActive] = useState(false);
+  const [scrollX, setScrollX] = useState(0);
+  const [scrolEnd, setScrolEnd] = useState(false);
+  const scrl = useRef(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [moviesPerPage] = useState(50);
 
   const filterByGenres = () => {
     if (!selectedGenre) {
@@ -107,6 +112,25 @@ function App() {
       });
   };
 
+  const slide = (shift) => {
+    scrl.current.scrollLeft += shift;
+    setScrollX(scrollX + shift);
+
+    if (
+      Math.floor(scrl.current.scrollWidth - scrl.current.scrollLeft) <=
+      scrl.current.offsetWidth
+    ) {
+      setScrolEnd(true);
+    } else {
+      setScrolEnd(false);
+    }
+  };
+
+  const lastMovieIndex = currentPage * moviesPerPage;
+  const firstMovieIndex = lastMovieIndex - moviesPerPage;
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
   return (
     <Router className="App">
       <AuthProvider>
@@ -115,6 +139,10 @@ function App() {
           movies={movies}
           favorites={favorites}
           errorMessage={errorMessage}
+          slide={slide}
+          scrl={scrl}
+          scrolEnd={scrolEnd}
+          scrollX={scrollX}
         />
         <Routes>
           <Route
@@ -128,6 +156,10 @@ function App() {
                 searchTheMovie={searchTheMovie}
                 errorMessage={errorMessage}
                 isLoading={isLoading}
+                moviesPerPage={moviesPerPage}
+                firstMovieIndex={firstMovieIndex}
+                lastMovieIndex={lastMovieIndex}
+                paginate={paginate}
               />
             }
           />
@@ -159,6 +191,10 @@ function App() {
               <MovieDetails
                 addToFavorites={addToFavorites}
                 favorites={favorites}
+                slide={slide}
+                scrl={scrl}
+                scrolEnd={scrolEnd}
+                scrollX={scrollX}
               />
             }
           />

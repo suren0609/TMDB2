@@ -29,6 +29,9 @@
   box-shadow: 0 -5px 0px #fff inset, 500px 0 0 rgba(255, 255, 255, 0.03) inset;
   padding: 20px 10px 25px 10px;
 }
+.nav{
+  display: none;
+}
 
 .logout{
   color: rgb(192, 192, 192);
@@ -105,6 +108,7 @@
   z-index: 3;
   cursor: pointer;
   opacity: 0;
+  display: none;
 }
 
 .burger,
@@ -114,6 +118,7 @@
 
 .navActive{
   position: absolute;
+  display: block;
   left: 0;
   top: 0;
   width: 100%;
